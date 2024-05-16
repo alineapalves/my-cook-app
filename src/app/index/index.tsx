@@ -1,10 +1,20 @@
 import {View, Text,ScrollView} from 'react-native';
 import {styles} from './styles';
 import { Ingredient } from '@/components/ingredient';
+import { useState } from 'react';
 
 export default function Home(){
 
-    function handleToggleSelected(){
+    const [selected,setSelected] = useState<string[]>([])
+
+    function handleToggleSelected(value: string){
+        if(selected.includes(value)){
+            return setSelected( (state) => state.filter((item) => item !== value))
+        }
+        setSelected((state)=> [...state,value]) 
+        console.log(selected);
+        
+        
         
     }
 
@@ -24,7 +34,8 @@ export default function Home(){
             >
                 
              {Array.from({length:100}).map ((item, index)=> (<Ingredient key={index}
-                name="Maça" image="" selected={false} onPress={() => handleToggleSelected}
+                name="Morango" image="" selected={selected.includes(String(index))} onPress={() => handleToggleSelected(String(index))}
+                
              
              />
              ))}
