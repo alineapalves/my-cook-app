@@ -35,6 +35,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7abf734a-5cf8-4004-bfd7-0384d1ecc65d"
+      }
+    },
+    "owner": "alineapalves"
   }
 }
