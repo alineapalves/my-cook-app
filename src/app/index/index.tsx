@@ -1,23 +1,34 @@
-import {View, Text,ScrollView} from 'react-native';
-import {styles} from './styles';
+import { useEffect, useState } from 'react';
+import {View, Text, ScrollView, Alert} from 'react-native';
+import { styles } from './styles';
 import { Ingredient } from '@/components/ingredient';
-import { useState } from 'react';
+import { Selected } from '@/components/selected';
+import { services } from '@/services';
+
 
 export default function Home(){
-
-    const [selected,setSelected] = useState<string[]>([])
+    const [selected, setSelected] = useState<string[]>([])
+    const [ingredients, setIngredients] = useState<IngredientResponse[]>([])
 
     function handleToggleSelected(value: string){
         if(selected.includes(value)){
-            return setSelected( (state) => state.filter((item) => item !== value))
+            return setSelected( (state) => state.filter( (item) => item !== value) )
         }
-        setSelected((state)=> [...state,value]) 
-        console.log(selected);
-        
-        
-        
+        setSelected( (state) => [...state, value])
     }
 
+    function handleClearSelected(){
+        Alert.alert("Limpar", "Deseja limpar tudo?",[
+            {text: "Não", style: "cancel"},
+            {text: "Sim", onPress: () => setSelected([]) },
+        ])
+    }
+
+    useEffect(() => {
+        services.ingredients.findAll().then(setIngredients)
+    }
+
+    )
 
     return(
         <View style={styles.container}>
@@ -26,20 +37,40 @@ export default function Home(){
                 <Text style={styles.subtitle}>os produtos</Text>
             </Text>
             <Text style={styles.message}>
-                Descubra receitas baseadas nos produtos que você escolheu
+                Descuba receitas baseadas nos produtos que você escolheu
             </Text>
-            {/*<Ingredient/>*/}
-            <ScrollView contentContainerStyle = {styles.ingredients}
-            showsVerticalScrollIndicator={false}
+            {/* <Ingredient /> */}
+            <ScrollView 
+                contentContainerStyle={styles.ingredients}
+                showsVerticalScrollIndicator={false}
             >
-                
-             {Array.from({length:100}).map ((item, index)=> (<Ingredient key={index}
-                name="Morango" image="" selected={selected.includes(String(index))} onPress={() => handleToggleSelected(String(index))}
-                
-             
-             />
-             ))}
-            </ScrollView>
+                {ingredients.map((item) => (
+                    <Ingredient key = {item.id}
+                    name={item.name}
+                    image={`${services.storage.imagePath}/${item.image}`}
+                    selected={selected.includes(item.id)}
+                    onPress={() => handleToggleSelected(item.id)} 
+                    />
+                ))}
+
+
+               
+            </ScrollView>  
+            { selected.length > 0 &&
+                <Selected 
+                    quantity={selected.length} 
+                    onClear={handleClearSelected}
+                    onSearch={() => {}}
+                />          
+            }
         </View>
     )
 }
+
+// {Array.from( {length:100} ).map( (item, index) => (
+//     <Ingredient key={index}  
+//         name="Maça" image="" 
+//         selected={selected.includes(String(index))}
+//         onPress={() => handleToggleSelected(String(index))}
+//     />
+// ))}
