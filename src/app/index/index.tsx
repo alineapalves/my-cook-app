@@ -4,6 +4,7 @@ import { styles } from './styles';
 import { Ingredient } from '@/components/ingredient';
 import { Selected } from '@/components/selected';
 import { services } from '@/services';
+import { router } from 'expo-router';
 
 
 export default function Home(){
@@ -22,6 +23,10 @@ export default function Home(){
             {text: "Não", style: "cancel"},
             {text: "Sim", onPress: () => setSelected([]) },
         ])
+    }
+
+    function handleSearch(){
+        router.navigate("./recipes/")
     }
 
     useEffect(() => {
@@ -60,7 +65,7 @@ export default function Home(){
                 <Selected 
                     quantity={selected.length} 
                     onClear={handleClearSelected}
-                    onSearch={() => {}}
+                    onSearch={handleSearch}
                 />          
             }
         </View>
