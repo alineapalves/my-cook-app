@@ -11,6 +11,15 @@ async function findAll(){
 
 }
 
+async function findByIds(ids:string[]) {
+    const{data} = await supabase
+    .from("ingredientes")
+    .select()
+    .in("id", ids)
+    .order("name")
+    .returns<IngredientResponse[]>()
+}
 
 
-export {findAll}
+
+export {findAll,findByIds}
